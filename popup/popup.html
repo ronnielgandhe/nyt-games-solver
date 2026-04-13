@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+  <title>NYT Games Solver</title>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">
+        <img src="../icons/usethisicon.png" alt="Logo">
+      </div>
+      <div class="header-text">
+        <h1>Game Solver</h1>
+        <p class="subtitle">Pick a game to auto-solve</p>
+      </div>
+    </div>
+
+    <div class="games">
+      <button class="game-card" data-game="wordle">
+        <div class="game-icon"><img src="../icons/wordle.png" alt="Wordle"></div>
+        <div class="game-info">
+          <span class="game-name">Wordle</span>
+          <span class="game-desc">Guess the 5-letter word</span>
+        </div>
+        <div class="game-arrow">&#8250;</div>
+      </button>
+
+      <button class="game-card" data-game="connections">
+        <div class="game-icon"><img src="../icons/connections.png" alt="Connections"></div>
+        <div class="game-info">
+          <span class="game-name">Connections</span>
+          <span class="game-desc">Group words into categories</span>
+        </div>
+        <div class="game-arrow">&#8250;</div>
+      </button>
+
+      <button class="game-card" data-game="strands">
+        <div class="game-icon"><img src="../icons/strands.png" alt="Strands"></div>
+        <div class="game-info">
+          <span class="game-name">Strands</span>
+          <span class="game-desc">Find themed words</span>
+        </div>
+        <div class="game-arrow">&#8250;</div>
+      </button>
+
+      <button class="game-card" data-game="mini-crossword">
+        <div class="game-icon"><img src="../icons/crossword.png" alt="Mini Crossword"></div>
+        <div class="game-info">
+          <span class="game-name">Mini Crossword <span class="badge-paid">Subscription</span></span>
+          <span class="game-desc">Quick crossword puzzle</span>
+        </div>
+        <div class="game-arrow">&#8250;</div>
+      </button>
+
+      <button class="game-card" data-game="spelling-bee">
+        <div class="game-icon"><img src="../icons/spellingbee.png" alt="Spelling Bee"></div>
+        <div class="game-info">
+          <span class="game-name">Spelling Bee <span class="badge-paid">Subscription</span></span>
+          <span class="game-desc">Make words from 7 letters</span>
+        </div>
+        <div class="game-arrow">&#8250;</div>
+      </button>
+    </div>
+
+    <div id="status" class="status hidden">
+      <div class="status-icon" id="status-icon">&#9203;</div>
+      <span id="status-text"></span>
+    </div>
+
+    <div class="footer">
+      <button id="debug-btn">Diagnostics</button>
+      <span id="version-label">v1.0</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

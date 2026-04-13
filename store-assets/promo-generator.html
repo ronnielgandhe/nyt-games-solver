@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, system-ui; background: #e8e8ed; padding: 30px; }
+  h2 { margin: 20px 0 4px; color: #1d1d1f; font-weight: 600; font-size: 15px; }
+  .note { color: #86868b; font-size: 11px; margin-bottom: 8px; }
+  canvas { display: block; margin-bottom: 30px; }
+</style>
+</head>
+<body>
+
+<h2>Small promo tile (440x280)</h2>
+<p class="note">Right-click, Save Image As</p>
+<canvas id="small" width="440" height="280"></canvas>
+
+<h2>Marquee promo tile (1400x560)</h2>
+<p class="note">Right-click, Save Image As</p>
+<canvas id="marquee" width="1400" height="560"></canvas>
+
+<script>
+function rr(ctx,x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+// Load game icons
+const iconNames = ['wordle', 'connections', 'strands', 'crossword', 'spellingbee'];
+const iconLabels = ['Wordle', 'Connections', 'Strands', 'Crossword', 'Spelling Bee'];
+const iconColors = ['#6aaa64', '#b59fdc', '#5bb3e0', '#121212', '#f5c518'];
+const icons = {};
+let loaded = 0;
+
+// Load the main logo
+const logo = new Image();
+logo.src = '../icons/usethisicon.png';
+logo.onload = () => { loaded++; if (loaded >= iconNames.length + 1) draw(); };
+
+iconNames.forEach(name => {
+  const img = new Image();
+  img.src = `../icons/${name}.png`;
+  img.onload = () => { icons[name] = img; loaded++; if (loaded >= iconNames.length + 1) draw(); };
+  img.onerror = () => { loaded++; if (loaded >= iconNames.length + 1) draw(); };
+});
+
+function draw() {
+  drawSmall();
+  drawMarquee();
+}
+
+// ── Small promo (440x280) ──
+function drawSmall() {
+  const ctx = document.getElementById('small').getContext('2d');
+  const W=440, H=280;
+
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0, '#f5f5f7');
+  bg.addColorStop(1, '#e8e8ed');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Logo
+  if (logo.complete) {
+    const s = 70;
+    ctx.save();
+    rr(ctx, W/2 - s/2, 55, s, s, 16);
+    ctx.clip();
+    ctx.drawImage(logo, W/2 - s/2, 55, s, s);
+    ctx.restore();
+  }
+
+  // Title
+  ctx.fillStyle = '#1d1d1f';
+  ctx.font = '700 22px -apple-system, system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('NYT Games Solver', W/2, 160);
+
+  // Subtitle
+  ctx.fillStyle = '#86868b';
+  ctx.font = '400 14px -apple-system, system-ui';
+  ctx.fillText('Solve every daily puzzle instantly.', W/2, 185);
+
+  // Game dots
+  const totalW2 = iconLabels.length * 65;
+  let dx = (W - totalW2) / 2 + 32;
+  iconColors.forEach((c, i) => {
+    ctx.beginPath();
+    ctx.arc(dx, 225, 4, 0, Math.PI*2);
+    ctx.fillStyle = c;
+    ctx.fill();
+    ctx.fillStyle = '#86868b';
+    ctx.font = '400 10px -apple-system, system-ui';
+    ctx.fillText(iconLabels[i], dx, 245);
+    dx += 65;
+  });
+}
+
+// ── Marquee promo (1400x560) ──
+function drawMarquee() {
+  const ctx = document.getElementById('marquee').getContext('2d');
+  const W=1400, H=560;
+
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0, '#f5f5f7');
+  bg.addColorStop(1, '#e8e8ed');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Left side — logo + text
+  if (logo.complete) {
+    const s = 110;
+    ctx.save();
+    rr(ctx, 320 - s/2, H/2 - 80, s, s, 22);
+    ctx.clip();
+    ctx.drawImage(logo, 320 - s/2, H/2 - 80, s, s);
+    ctx.restore();
+  }
+
+  ctx.fillStyle = '#1d1d1f';
+  ctx.font = '700 42px -apple-system, system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('NYT Games Solver', 320, H/2 + 60);
+
+  ctx.fillStyle = '#86868b';
+  ctx.font = '400 18px -apple-system, system-ui';
+  ctx.fillText('One click. Every game. Instant.', 320, H/2 + 92);
+
+  // Right side — game cards with icons
+  const cardW = 140, cardH = 170, gap = 20;
+  const startX = 650;
+  const cardY = (H - cardH) / 2;
+
+  iconNames.forEach((name, i) => {
+    const x = startX + i * (cardW + gap);
+
+    // Card shadow
+    ctx.shadowColor = 'rgba(0,0,0,0.06)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 4;
+    rr(ctx, x, cardY, cardW, cardH, 14);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+
+    // Colored top accent
+    ctx.save();
+    rr(ctx, x, cardY, cardW, cardH, 14);
+    ctx.clip();
+    ctx.fillStyle = iconColors[i];
+    ctx.fillRect(x, cardY, cardW, 4);
+    ctx.restore();
+
+    // Game icon
+    if (icons[name]) {
+      const is = 48;
+      ctx.save();
+      rr(ctx, x + cardW/2 - is/2, cardY + 28, is, is, 10);
+      ctx.clip();
+      ctx.drawImage(icons[name], x + cardW/2 - is/2, cardY + 28, is, is);
+      ctx.restore();
+    }
+
+    // Game name
+    ctx.fillStyle = '#1d1d1f';
+    ctx.font = '600 14px -apple-system, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(iconLabels[i], x + cardW/2, cardY + 100);
+
+    // Auto badge
+    ctx.fillStyle = '#34c759';
+    ctx.font = '500 12px -apple-system, system-ui';
+    ctx.fillText('\u2713 Auto', x + cardW/2, cardY + cardH - 28);
+  });
+}
+</script>
+</body>
+</html>
